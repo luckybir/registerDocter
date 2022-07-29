@@ -85,7 +85,7 @@ func main() {
 	initConfig()
 	initClient()
 
-	test()
+	//test()
 
 	//getCookie()
 	if config.Cron.Schedule == false {
@@ -99,6 +99,17 @@ func main() {
 }
 
 func test() {
+
+	t := true
+
+	if t == true {
+		sugar.Warn("stop")
+		cronQuit <- true
+		sugar.Warn("after stop")
+
+	} else {
+		sugar.Warn("continue")
+	}
 
 }
 
@@ -159,13 +170,18 @@ func initClient() {
 func initCron() {
 	sugar.Infof("starting go cron...")
 
+	cronQuit = make(chan bool, 0)
+
 	c := cron.New()
 	c.AddFunc(config.Cron.Pattern, scheduleJobSendRemain)
+
 	c.Start()
 	defer c.Stop()
+
 	select {
 	case <-time.After(30 * time.Minute):
 		sugar.Info("time out cron stop...")
+
 	case <-cronQuit:
 		sugar.Info("job finished")
 	}
@@ -371,7 +387,7 @@ func scheduleJobSendRemain() {
 			"config begin time", config.Cron.BeginTime)
 	}
 
-	configEndTime, err := time.Parse("15:04", config.Cron.BeginTime)
+	configEndTime, err := time.Parse("15:04", config.Cron.EndTime)
 	if err != nil {
 		sugar.Errorw("parse config begin time error",
 			"err", err.Error(),
@@ -424,8 +440,9 @@ func scheduleJobSendRemain() {
 	}
 
 	if findRegRemain == true {
+		sendWeatherContentTextToWeworkBot("cron stop...")
 		cronQuit <- true
-	}else{
+	} else {
 		sugar.Info("no remain")
 	}
 }
