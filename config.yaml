@@ -1,0 +1,21 @@
+Jid: E8DE55198AD34E2042E0FE4E5E7E234D
+
+registration_info:
+  hospital_id: 100201
+  department_id: 1003000FEZX239892
+  doctor_id: 280
+
+display:
+  doctor_registration_info: true
+  doctor_registration_time_info: true
+  doctor_valid_registration: true
+
+cron:
+  schedule: false
+  date: 2022-08-04
+  filter_by_time: true
+  begin_time: 8:00
+  end_time: 17:00
+  pattern: "0/1 * * * *"
+  bot_web_hook: wework bot hook
+
